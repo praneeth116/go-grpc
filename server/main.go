@@ -16,13 +16,17 @@ type helloServer struct{
 }
 
 func main(){
-	lis, err := net.Listen("tcp",port)
+	lis, err := net.Listen("tcp",port) // Start listening for connections on our port.
 	if err != nil{
 		log.Fatalf("Failed to start the server %v",err)
 	}
-	grpcServer := grpc.NewServer()
-	pb.RegisterGreetServiceServer(grpcServer, &helloServer{})
+	grpcServer := grpc.NewServer() // Create a new gRPC server.
+
+	// Register our service implementation with the gRPC server.
+	pb.RegisterGreetServiceServer(grpcServer, &helloServer{}) 
 	log.Printf("server started at %v", lis.Addr())
+
+	// Start the server and begin accepting client connections. This runs forever.
 	if err := grpcServer.Serve(lis); err != nil{
 		log.Fatalf("Failed to start %v", err)
 	}

@@ -5,8 +5,8 @@ import (
 	pb "github.com/praneeth116/go-grpc/proto"
 )
 
-func (s *helloServer)SayHello(context.Context, *pb.NoParam)(*pb.HelloResponse, error){
+func (s *helloServer)SayHello(ctx context.Context, req *pb.NoParam)(*pb.HelloResponse, error){
 	return &pb.HelloResponse{
-		Message: "Hello Beyotch",
+		Message: "Hello Unary",
 	}, nil
 }
