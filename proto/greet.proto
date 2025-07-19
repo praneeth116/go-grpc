@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+option go_package = "./proto"; //The directory where the files will be generated.
+
+package greet_service; // This is the Protobuf package name.
+
+//Message definitions
+message NoParam{};
+
+message HelloRequest{
+    string name = 1;
+}
+
+message HelloResponse{
+    string message = 1;
+}
+
+message NameList{
+    repeated string names = 1;
+}
+
+message MessageList{
+    repeated string messages = 1;
+}
+
+//Service definitions
+service GreetService{
+    // Unary RPC
+    rpc SayHello(NoParam) returns (HelloResponse); 
+    // Server Streaming
+    rpc SayHelloServerStreaming(NameList) returns (stream HelloResponse); 
+    //Client streaming
+    rpc SayHelloClientStreaming(stream HelloRequest) returns (MessageList); 
+    //Bidirectional Streaming
+    rpc SayBiDirectionalStreaming(stream HelloRequest) returns (stream HelloResponse); 
+}
+
