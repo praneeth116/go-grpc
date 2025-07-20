@@ -34,6 +34,8 @@ func main(){
 		Names: []string{"Praneeth" ,"Pavan", "Akshay", "Aravind"},
 	}
 
-	callSayHelloServerStreaming(client, names) //Server streaming RPC
+	// callSayHelloServerStreaming(client, names) //Server streaming RPC
+
+	callSayHelloClientStreaming(client, names) // Client streaming RPC
 
 }
