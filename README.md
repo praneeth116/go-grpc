@@ -24,8 +24,8 @@ Before you begin, ensure you have the following installed on your system:
 
 1.  **Clone the repository:**
     ```sh
-    git clone <your-repository-url>
-    cd <your-repository-directory>
+    git clone https://github.com/praneeth116/go-grpc.git
+    cd go-grpc
     ```
 
 2.  **Install Go dependencies for gRPC:**
