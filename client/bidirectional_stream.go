@@ -2,8 +2,10 @@ package main
 
 import (
 	"context"
+	"io"
 	"log"
 	"time"
+
 	pb "github.com/praneeth116/go-grpc/proto"
 )
 
@@ -13,20 +15,42 @@ func callSayHelloBiDirectionalStreaming(client pb.GreetServiceClient, names *pb.
 	if err != nil{
 		log.Fatalf("couldn't send names %v", err)
 	}
+	
+	// Create a channel to signal when the receiving part is done.
+	waitc := make(chan struct{})
+
+	// Start a new goroutine to receive messages from the server concurrently.
+	go func() {
+		for{
+			message, err := stream.Recv()
+			if err == io.EOF{
+				// If the server has finished sending, break the loop.
+				break
+			}
+			if err != nil{
+				log.Fatalf("Error while streaming %v", err)
+			}
+			log.Println(message.Message)
+		}
+		// When the loop is done, close the channel to signal completion.
+		close(waitc)
+	}()
+
 	for _, name := range names.Names{
 		req := &pb.HelloRequest{
 			Name: name,
 		}
-		if err := stream.Send(req); err != nil{
+		if err := stream.Send(req);err != nil{
 			log.Fatalf("Error while sending %v", err)
 		}
-		log.Printf("Sent the request with name: %s", name)
 		time.Sleep(2 * time.Second)
-
-		res, err := stream.Recv()
-		if err != nil{
-			log.Fatalf("Error while receiving %v", err)
-		}
-		log.Printf("%v", res.Message)
 	}
+
+	// After sending all names, close the sending side of the stream.
+	stream.CloseSend()
+
+	// Wait here until the `waitc` channel is closed by the receiving goroutine.
+	<-waitc
+
+	log.Printf("Bidirectional streaming finished!")
 }
